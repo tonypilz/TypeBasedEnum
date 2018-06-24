@@ -21,29 +21,20 @@ using Value = std::variant<A,B,C>;
 
 }
 
+constexpr int foo(MyEnumTyped::A){return 1;}
+constexpr int foo(MyEnumTyped::B){return 2;}
+constexpr int foo(MyEnumTyped::C){return 3;}
 
-int foo(MyEnumTyped::A){return 1;}
-int foo(MyEnumTyped::B){return 2;}
-int foo(MyEnumTyped::C){return 3;}
+constexpr MyEnumTyped::Value v = MyEnumTyped::B{};
 
-
-}
-
-
-namespace full{
+constexpr auto i = std::visit([](auto  e){ return foo(e); },v);
 
 int main() {
-
-    const MyEnumTyped::Value v = MyEnumTyped::B{};
-
-    const auto i = std::visit([](auto  e){ return foo(e); },v);
 
 
     std::cout<<"i=" << i <<" \n";
 
     std::cout << " v = " << toString(v) << std::endl;
-
-
 
     MyEnumTyped::Value x;
 
