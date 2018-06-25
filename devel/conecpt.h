@@ -6,61 +6,72 @@
 namespace conecpt{
 
 
-enum class MyEnumClassic {
+
+/////////////////////////////////////
+
+namespace classic {
+
+enum class MyEnum
+{
     A,
     B,
     C
 };
 
+int main()
+{
+    MyEnum e = MyEnum::B;
 
-namespace MyEnumTyped {
+    switch(e){
 
-struct A{};
-struct B{};
-struct C{};
-
-using Value = std::variant<A,B,C>;
-
-}
-
-
-
-int foo(MyEnumClassic v){
-    switch(v){
-
-    case MyEnumClassic::A: return 1;
-    case MyEnumClassic::B: return 2;
-    case MyEnumClassic::C: return 3;
+    case MyEnum::A: return 1;
+    case MyEnum::B: return 2;
+    case MyEnum::C: return 3;
     default:
         break;
     }
 
     return -1;
-
-
 }
 
-int foo(MyEnumTyped::A){return 1;}
-int foo(MyEnumTyped::B){return 2;}
-int foo(MyEnumTyped::C){return 3;}
+} // ns classic
 
 
+
+
+/////////////////////////////////////
+
+namespace typed {
+
+namespace MyEnum
+{
+    struct A{};
+    struct B{};
+    struct C{};
+
+    using Value = std::variant<A,B,C>;
+}
+
+int case_(MyEnum::A){ return 1; }
+int case_(MyEnum::B){ return 2; }
+int case_(MyEnum::C){ return 3; }
+
+int main()
+{
+    MyEnum::Value e = MyEnum::B{};
+    return std::visit([](auto  e_){ return case_(e_); },e);
+}
+
+} //ns typed
+
+
+
+
+/////////////////////////////////////
 
 int main() {
-
-    MyEnumClassic m = MyEnumClassic::B;
-    MyEnumTyped::Value v = MyEnumTyped::B{};
-
-    const auto j = foo(m);
-    const auto i = std::visit([](auto  e){ return foo(e); },v);
-
-    std::cout<<"i=" << i << " j=" << j << " \n";
-
-    return 0;
+    return classic::main() == typed::main();
 }
-
-
-
 
 
 

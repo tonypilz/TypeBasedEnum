@@ -13,7 +13,7 @@ SOURCES += main.cpp
 HEADERS += \
     conecpt.h \
     full_example.h \
-    operations.h
+    variant_helper.h
 
 
 
