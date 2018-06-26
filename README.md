@@ -1,5 +1,5 @@
 # TypeBasedEnum
-An alternative realization of an enum is demonstrated below which is based on types instead of enum values. It makes use of std::variant to represent different enum values as shown in the example below:
+An alternative realization of an enum is demonstrated below which is based on types instead of enum values as shown in the following example:
 
 Classical representation:
 
@@ -12,7 +12,7 @@ enum class MyEnum
 };
 ```
 
-Type-base representation:
+Type-based representation:
 
 ```cpp
 #include <variant>
@@ -26,14 +26,29 @@ namespace MyEnum
     using Value = std::variant<A,B,C>;
 }
 ```
+The following table lists advantages and disadvantages of the apporach (+ means typebased better than classical, o equal, - worse) :
 
-## Typical Use-Cases 
+| Aspect       | Comparison |
+|--------------|------------|
+| Savety       | o          |
+| Boilerplate  | -          |
+| Readablity   | -          |
+| Meta Info    | +          |
+| Extendablity | +          |
 
-In this section some standard uses cases of enums are considered how they can be realized with typebased enums.
+Explanations 
+ - Savety: means the compiler support in case of errors
+ - Boilerplate: means extra amount of code with no meaning
+ - Meta Info: means the amount of code necessary to provide meta information to e.g stringify, unstringify or iterate over all enums
+ - Extendablity: enrich enum values with additional informations and functions (see section Extendablity)
+
+## Usage
+
+The usage of typebased enums is exemplified on different control structures listed below:
 
 ### Switch Statement
 
-A standard switch statement like the following:
+A standard switch statement e.g.:
 
 ```cpp
 
@@ -61,7 +76,7 @@ int main()
 }
 ```
 
-A typebased version could look as follows:
+can be formulated as typebased version as follows:
 
 ```cpp
 #include <variant>
@@ -85,7 +100,7 @@ int main()
     return std::visit([](auto  e_){ return case_(e_); },e);
 }
 ```
-Note that the type `Value` must contain all types. If a type is not included in `Value` it cannot be used in combination with it. Also note that `case_()` functions must be provied for all types in order to have successful compilation. 
+Note that the type `Value` must contain all types. If a type is not included in `Value` it cannot be used in combination with it. Also note that `case_()` functions must be provied for all types contained in `Value` in order to have successful compilation. 
 
 ### If Statement
 
@@ -107,12 +122,16 @@ int main()
 {
     MyEnum::Value v = MyEnum::B{};
 
-    if (std::holds_alternative<MyEnum::B>(v)) // returns 1
+    if (std::holds_alternative<MyEnum::B>(v)) 
         return 1;
 
     return 0;
 }
 ```
+
+The function `main()` returns `1`.
+
+
 ### Stringify
 
 The stringification of typebased enums can be done fully generic by employing the type-information provided by `std::variant`: 
