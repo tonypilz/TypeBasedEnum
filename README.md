@@ -27,13 +27,13 @@ namespace MyEnum
 }
 ```
 
-## Comparison 
+## Typical Use-Cases 
 
-The type-based representation has serveral advantages.
+In this section some standard uses cases of enums are considered how they can be realized with typebased enums.
 
 ### Switch Statement
 
-The classical version of a switch statement could look like the following:
+A standard switch statement like the following:
 
 ```cpp
 
@@ -61,7 +61,7 @@ int main()
 }
 ```
 
-A typebased version of the switch statement above could look like the following:
+A typebased version could look as follows:
 
 ```cpp
 #include <variant>
@@ -115,9 +115,7 @@ int main()
 ```
 ### Stringify
 
-The stringification of regular enums requires another switch statement which provides the strings to be printed (or macros). 
-
-The stringification of typebased enums can employ type-information provided by `std::variant`: 
+The stringification of typebased enums can be done fully generic by employing the type-information provided by `std::variant`: 
 
 ```cpp
 #include <iostream>
@@ -140,14 +138,11 @@ void main()
 }
 ```
 
-The code in `variant_helper.h` provides the function `vahlp::toString()` which simply prints the type typename of the argument.
+The file `variant_helper.h` contains the function `vahlp::toString()` which simply prints the type typename of the argument.
 
 ### Unstringify
 
-The unstringification of regular enums requires stringification combined with a facility to iterate all possible enum values. 
-
-The unstringification of typebased enums requires stringification combined with a facility to iterate all possible enum values, which can also be derived from the type-information provided by the variant type:
-
+The unstringification of typebased enums can also be done fully generic by employing the type-information provided by `std::variant`: 
 
 ```cpp
 #include <iostream>
@@ -169,11 +164,9 @@ void main()
     std::cout<< "parsed v=" << vahlp::toString(v) << "\n";   //prints 'parsed v=MyEnum::C'
 }
 ```
+The file `variant_helper.h` contains the function `vahlp::fromString()` which iterates over all typenames of the variant to determine the resulting enum type.
 
-The code in `variant_helper.h` provides the function `vahlp::fromString()` which iterates over all typenames of the variant to determine the resulting enum type.
-
-
-### Constexpr friendly
+### Constexpr
 
 Typed enums can be used in constexpr context: 
 
@@ -200,9 +193,10 @@ constexpr MyEnum::Value v = MyEnum::B{};
 constexpr auto i = std::visit([](auto  e){ return foo(e); },v); // i is set to 2
 ```
 
-### Usability as Index
+### Use as Index
 
 Typed enums can be used as index in eg. maps:
+
 ```cpp
 #include <iostream>
 #include <variant>
@@ -232,12 +226,11 @@ void main() {
 }
 ```
 
-Note that `operator<()` is overloaded (see `variant_helper.h`) for variants. The implementation of `operator<()` makes use of the index of a type within the variant. 
+Note that `operator<()` is overloaded here for variants  (see `variant_helper.h`). The implementation of `operator<()` makes use of the type-index within the variant. 
 
 ### Iteratibilty
 
-
-Typed enums can be iterated over:
+All typed enums can be iterated over:
 
 ```cpp
 #include <iostream>
@@ -265,7 +258,7 @@ void main() {
 }
 ```
 
-The function `vahlp::makeInstances<MyEnum::Value>()` creates an instance for each type of `Value` and returns it within a `std::vector<MyEnum::Value>`.
+The function `vahlp::makeInstances<MyEnum::Value>()` returns an instance of each type contained in `Value` within a vector of type `std::vector<MyEnum::Value>`.
 
 ### Extendablity
 
